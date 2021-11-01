@@ -1,0 +1,74 @@
+[
+ {
+ "category": "Футболки",
+ "name": "Поло",
+ "image": "product_images/Hunter-X-Hunter-2020-Kawayi-Killua.jpeg",
+ "short_desc": "super",
+ "discription": "ffff",
+ "price": "2300.00",
+ "quantity": 1
+ },
+ {
+ "category": "Стулья",
+ "name": "Неудобный стул",
+ "image": "product_images/product-21.jpg",
+ "short_desc": "",
+ "discription": "",
+ "price": "2500.00",
+ "quantity": 100
+ },
+ {
+ "category": "Стулья",
+ "name": "Удобный стул",
+ "image": "product_images/product-2.jpg",
+ "short_desc": "",
+ "discription": "",
+ "price": "3222.00",
+ "quantity": 3
+ },
+ {
+ "category": "Футболки",
+ "name": "отличная футболка",
+ "image": "product_images/app-store.png",
+ "short_desc": "",
+ "discription": "",
+ "price": "1000.00",
+ "quantity": 20
+ },
+ {
+ "category": "Дом",
+ "name": "Часы",
+ "image": "product_images/product-4-sm.jpg",
+ "short_desc": "",
+ "discription": "",
+ "price": "456.00",
+ "quantity": 10
+ },
+ {
+ "category": "Офис",
+ "name": "Кресло",
+ "image": "",
+ "short_desc": "Супер",
+ "discription": "",
+ "price": "4500.00",
+ "quantity": 32
+ },
+ {
+ "category": "Модерн",
+ "name": "Ступка",
+ "image": "product_images/product-51.jpg",
+ "short_desc": "",
+ "discription": "",
+ "price": "2300.00",
+ "quantity": 2
+ },
+ {
+ "category": "Классика",
+ "name": "Лампа",
+ "image": "product_images/product-31.jpg",
+ "short_desc": "",
+ "discription": "",
+ "price": "7800.00",
+ "quantity": 7
+ }
+ ]
