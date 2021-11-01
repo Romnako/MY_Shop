@@ -1,0 +1,7 @@
+# created by virtualenv automatically
+env/
+~/__pycashe__
+*pyk
+.idea
+geekshop/db.sqlite3
+
