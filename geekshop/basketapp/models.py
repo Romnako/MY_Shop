@@ -1,6 +1,8 @@
 from django.db import models
 from django.conf import settings
 from mainapp.models import Product
+from datetime import datetime, date, time
+
 
 class Basket(models.Model):
 
@@ -21,6 +23,7 @@ class Basket(models.Model):
         verbose_name='время',
         auto_now_add=True
     )
+
     add_datetime = models.DateTimeField(verbose_name='время', auto_now_add=True)
 
     is_active = models.BooleanField(verbose_name='активна', default=True)
