@@ -22,10 +22,10 @@ def basket_add(request, pk):
         return HttpResponseRedirect(reverse('product:detail', args=[pk]))
     product = get_object_or_404(Product, pk=pk)
 
-    basket = Basket.objects.filter(user=request.user, product=product)
+    basket = Basket.objects.filter(user=request.user, product=product).first()
 
     if not basket:
-        basket = Basket(user=request.user, product=product).first()
+        basket = Basket(user=request.user, product=product)
 
     basket.quantity +=1
     basket.save()
@@ -34,7 +34,7 @@ def basket_add(request, pk):
 
 @login_required
 def basket_remove(request):
-    basket.record =get_object_or_404(Basket,pk=pk)
+    basket.record =get_object_or_404(Basket, pk=pk)
     basket_record.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
