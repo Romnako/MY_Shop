@@ -8,4 +8,5 @@ urlpatterns = [
     path('product/<int:pk>', product, name='detail'),
     path('category/<int:pk>/page/<int:page>/', products, name='page'),
     # path('users/delete/<int:pk>/', user_delete, name='user_delete'),
+
 ]
