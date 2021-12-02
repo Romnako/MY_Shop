@@ -8,7 +8,7 @@ from allauth.socialaccount.signals import pre_social_login
 
 def main(request):
     title = 'Магазин'
-    products = Product.objects.all()[1:4]
+    products = Product.objects.all.filter(is_active=True, category__is_active=True).select_related('category')[:4]
 
     context = {
         'title': title,
