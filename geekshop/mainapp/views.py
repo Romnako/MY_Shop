@@ -5,13 +5,6 @@ from mainapp.models import ProductCategory, Product
 import random
 
 
-def get_basket(user):
-    if user.is_authenticated:
-        return Basket.objects.filter(user=user)
-    else:
-        return []
-
-
 def get_hot_product():
     products = Product.objects.all()
     return random.sample(list(products), 1)[0]
@@ -27,20 +20,20 @@ def products(request, pk=None, page=1):
 
     links_menu = ProductCategory.objects.all()
 
-    basket = get_basket(request.user)
-
     if pk is not None:
         if pk == 0:
 
             category = {'pk': 0, 'name': 'все'}
-            products = Product.objects.filter(is_active=True, category__is_active=True).order_by('price')
+            products = Product.objects.filter(is_active=True, category__is_active=True,
+                                              quantity__gte=1).order_by('price').select_related('category')
         else:
             category = get_object_or_404(ProductCategory, pk=pk)
             products = Product.objects.filter(
                 category__pk=pk,
                 is_active=True,
-                category__is_active=True
-            ).order_by('price')
+                category__is_active=True,
+                quantity__gte=1
+            ).order_by('price').select_related('category')
 
         paginator = Paginator(products, 2)
         try:
@@ -56,13 +49,13 @@ def products(request, pk=None, page=1):
             'links_menu': links_menu,
             'category': category,
             'products': products_paginator,
-            'basket': basket,
         }
         return render(request, 'mainapp/products.html', context)
 
     hot_product = get_hot_product()
     same_products = get_same_products(hot_product)
-    products = Product.objects.filter(is_active=True, category__is_active=True).order_by('price')
+    products = Product.objects.filter(is_active=True, category__is_active=True,
+                                      quantity__gte=1).order_by('price')
 
     context = {
         'title': title,
@@ -70,7 +63,6 @@ def products(request, pk=None, page=1):
         'hot_product': hot_product,
         'same_products': same_products,
         'products': products,
-        'basket': basket,
     }
 
     return render(request, 'mainapp/products.html', context)
@@ -86,6 +78,5 @@ def product(request, pk):
         'links_menu': ProductCategory.objects.all(),
         'product': product,
         'same_products': get_same_products(product),
-        'basket': get_basket(request.user)
     }
     return render(request, 'mainapp/product.html', context)
