@@ -3,7 +3,7 @@ from django.conf import settings
 from mainapp.models import Product
 from django.dispatch import receiver
 from django.db.models.signals import pre_save, pre_delete
-
+from django.utils.functional import cached_property
 
 
 class Order(models.Model):
@@ -54,6 +54,13 @@ class Order(models.Model):
 
     def __str__(self):
         return 'Заказ {self.user.username} №{self.id} от {self.created}'
+
+    def get_summary(self):
+        items = self.orderitems.select_related()
+        return {
+            'total_cost': sum(list(map(lambda x: x.quantity * x.product.price, items))),
+            'total_quantity': sum(list(map(lambda x: x.quantity, items))),
+        }
 
     def get_total_quantity(self):
         items = self.orderitems.select_related()
