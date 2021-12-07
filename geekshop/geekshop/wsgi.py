@@ -10,6 +10,13 @@ https://docs.djangoproject.com/en/3.1/howto/deployment/wsgi/
 import os
 from django import wsgi
 from django.core.wsgi import get_wsgi_application
+# from django.conf import settings
+#
+#
+# def get_internal_wsgi_application():
+#     app_path = getattr(settings, 'WSGI_APPLICATION')
+#     if app_path is None:
+#         return get_wsgi_application()
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'geekshop.settings')
 
