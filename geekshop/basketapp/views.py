@@ -6,6 +6,9 @@ from mainapp.models import Product
 from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.http import JsonResponse
+from django.db.models import F, Q
+
+
 
 @login_required
 def basket(request):
@@ -22,19 +25,25 @@ def basket_add(request, pk):
         return HttpResponseRedirect(reverse('product:detail', args=[pk]))
     product = get_object_or_404(Product, pk=pk)
 
-    basket = Basket.objects.filter(user=request.user, product=product)
+    basket = Basket.objects.filter(user=request.user, product=product).first()
+
+
+    Product.object.filter(Q(category__name='Офис') | Q(category__name='Горящие товары'))
+    raw = Product.object.raw('select *')#любой sql запрос можно поместить, но можно испортить данные БД, осторожно!!!!
 
     if not basket:
-        basket = Basket(user=request.user, product=product).first()
+        basket = Basket(user=request.user, product=product)
 
-    basket.quantity +=1
-    basket.save()
+    # basket.quantity +=1
+    # basket.save()
+
+    basket.quantity = F('quantity') + 1
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
 
 @login_required
 def basket_remove(request):
-    basket.record =get_object_or_404(Basket,pk=pk)
+    basket.record =get_object_or_404(Basket, pk=pk)
     basket_record.delete()
     return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 

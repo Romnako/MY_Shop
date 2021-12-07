@@ -8,6 +8,11 @@ from adminapp.forms import ShopUserAdminEditForm, ProductEditForm
 from django.views.generic import ListView, CreateView, UpdateView, DetailView, DeleteView
 from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
+from django.db.models.signals import pre_save
+from django.db import connection
+from django.dispatch import receiver
+
+
 
 
 class UsersListView(ListView):
@@ -22,16 +27,19 @@ class UsersListView(ListView):
 
         return context
 
-    @method_decorator(user_passes_test(lambda u: u.is_superuser))
-    def dispatch(self, *args, **kwargs ):
-        return super().dispatch(*args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        get_con = seper(UsersListView, self).get()
-        return get_con
-
     def get_queryset(self):
         return ShopUser.objects.all().order_by('-is_active', '-is_superuser', '-is_staff', 'username')
+
+    # @method_decorator(user_passes_test(lambda u: u.is_superuser))
+    # def dispatch(self, *args, **kwargs ):
+    #     return super().dispatch(*args, **kwargs)
+    #
+    # def get(self, request, *args, **kwargs):
+    #     get_con = seper(UsersListView, self).get()
+    #     return get_con
+    #
+    # def get_queryset(self):
+    #     return ShopUser.objects.all().order_by('-is_active', '-is_superuser', '-is_staff', 'username')
 
 # @user_passes_test(lambda u: u.is_superuser)
 # def users(request):
@@ -93,6 +101,20 @@ class UserCreateView(CreateView):
 #     return render(request, 'adminapp/user_update.html', context)
 
 
+class UserDeleteView(DeleteView):
+    model = ShopUser
+    template_name = 'adminapp/user_delete.html'
+    success_url = reverse_lazy('admin_staff:users')
+
+    def delete(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        self.object.is_active = False
+        self.object.save()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+
+
 class UserUpdateView(UpdateView):
     model = ShopUser
     form_class = ShopUserAdminEditForm
@@ -116,17 +138,6 @@ class UserUpdateView(UpdateView):
 #     return render(request, 'adminapp/user_delete.html', context)
 
 
-class UserDeleteView(DeleteView):
-    model = ShopUser
-    template_name = 'adminapp/user_delete.html'
-    success_url = reverse_lazy('admin staff: users')
-
-    def delete(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        self.object.is_active = False
-        self.object.save()
-
-        return HttpResponseRedirect(self, get_succsseer_url())
 
 
 
@@ -239,5 +250,25 @@ def product_delete(request, pk):
     context = {'title': title, 'product_to_delete': product}
 
     return render(request, 'adminapp/product_delete.html', context)
+
+
+def db_profile_by_type(prefix, type, queries):
+    update_queries = list(filter(lambda x: type in x['sql'], queries))
+    print(f'db_profile {type} for {prefix}:')
+    [print(query['sql']) for query in update_queries]
+
+
+@receiver(pre_save, sender=ProductCategory)
+def product_is_active_update_productcategory_save(sender, instance, **kwargs):
+    if instance.pk:
+        # if instance.is_active:
+        #     instance.product_set.update(is_active=True)
+        # else:
+        #     instance.product_set.update(is_active=False)
+        instance.product_set.update(is_active=instance.is_active)
+
+        db_profile_by_type(sender, 'UPDATE', connection.queries)
+
+
 
 
